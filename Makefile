@@ -1,10 +1,6 @@
 BUILD_DIR ?= $(CURDIR)/build
 COMMIT    := $(shell git log -1 --format='%H')
 
-all: test-unit install
-
-.PHONY: all
-
 ###############################################################################
 ##                                  Version                                  ##
 ###############################################################################
@@ -51,3 +47,11 @@ lint:
 	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run --timeout=10m
 
 .PHONY: lint
+
+###############################################################################
+##                                  All                                      ##
+###############################################################################
+
+all: test-unit install
+
+.PHONY: all
