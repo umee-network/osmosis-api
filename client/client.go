@@ -27,7 +27,7 @@ func NewClient(grpcEndpoint string, tls bool) Client {
 
 // GetTxs returns the transactions which match the events queried,
 // e.g. ["message.action='/cosmos.bank.v1beta1.Msg/Send'"]
-func (c *Client) GetTxs(events []string) (tx.GetTxsEventResponse, error) {
+func (c *Client) GetTxs(events []string) ([]*tx.Tx, error) {
 	config := &tls.Config{
 		InsecureSkipVerify: false,
 	}
@@ -48,7 +48,7 @@ func (c *Client) GetTxs(events []string) (tx.GetTxsEventResponse, error) {
 		grpcOpts...,
 	)
 	if err != nil {
-		return tx.GetTxsEventResponse{}, fmt.Errorf("failed to dial Cosmos gRPC service: %w", err)
+		return []*tx.Tx{}, fmt.Errorf("failed to dial Cosmos gRPC service: %w", err)
 	}
 
 	defer grpcConn.Close()
@@ -63,8 +63,8 @@ func (c *Client) GetTxs(events []string) (tx.GetTxsEventResponse, error) {
 		},
 	)
 	if err != nil {
-		return tx.GetTxsEventResponse{}, fmt.Errorf("failed to make grpc query: %w", err)
+		return []*tx.Tx{}, fmt.Errorf("failed to make grpc query: %w", err)
 	}
 
-	return *queryResponse, nil
+	return queryResponse.Txs, nil
 }
