@@ -20,7 +20,7 @@ A clear and concise description of what the 🐞 is.
 
 Please provide the output of the following commands:
 
-- `$ umeed version`
+- `$ osmosis-api version`
 - `$ go version`
 - `$ uname -a`
 
