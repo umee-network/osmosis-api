@@ -6,19 +6,19 @@ import (
 	"strings"
 )
 
-// dialer dials the given address and returns a net.Conn. The addr
+// dial dials the given address and returns a net.Conn. The addr
 // argument should be prefixed with the protocol,
 // eg. "tcp://127.0.0.1:8080" or "unix:///tmp/test.sock".
-func dialer(ctx context.Context, addr string) (net.Conn, error) {
-	proto, address := protocolAndAddress(addr)
+func dial(ctx context.Context, addr string) (net.Conn, error) {
+	proto, address := splitProtocolAndAddress(addr)
 	conn, err := net.Dial(proto, address)
 	return conn, err
 }
 
-// protocolAndAddress splits an address into the protocol and address components.
+// splitProtocolAndAddress splits an address into the protocol and address components.
 // For instance, "tcp://127.0.0.1:8080" will be split into "tcp" and "127.0.0.1:8080".
 // If the address has no protocol prefix, the default is "tcp".
-func protocolAndAddress(listenAddr string) (string, string) {
+func splitProtocolAndAddress(listenAddr string) (string, string) {
 	protocol, address := "tcp", listenAddr
 
 	parts := strings.SplitN(address, "://", 2)
