@@ -1,0 +1,3 @@
+[server]
+listen_addr = "0.0.0.0:99999"
+read_timeout = "20s"
