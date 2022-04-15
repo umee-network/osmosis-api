@@ -57,6 +57,9 @@ func ParseConfig(configPath string) (Config, error) {
 	if len(cfg.Server.ReadTimeout) == 0 {
 		cfg.Server.ReadTimeout = defaultReadTimeout
 	}
+	if len(cfg.Server.ListenAddr) == 0 {
+		cfg.Server.ListenAddr = defaultServerAddress
+	}
 
 	return cfg, cfg.Validate()
 }
