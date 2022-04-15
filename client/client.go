@@ -34,12 +34,12 @@ func (c *Client) GetTxs(events []string) ([]*tx.Tx, error) {
 
 	grpcOpts := []grpc.DialOption{
 		grpc.WithInsecure(),
-		grpc.WithContextDialer(dialerFunc),
+		grpc.WithContextDialer(dialer),
 	}
 	if c.tls {
 		grpcOpts = []grpc.DialOption{
 			grpc.WithTransportCredentials(credentials.NewTLS(config)),
-			grpc.WithContextDialer(dialerFunc),
+			grpc.WithContextDialer(dialer),
 		}
 	}
 
