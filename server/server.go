@@ -20,7 +20,7 @@ type Server struct {
 	cfg      config.Server
 }
 
-func (s Server) SocketHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) SocketHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := s.upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("Error during connection upgrade:", err)
@@ -33,7 +33,7 @@ func (s Server) SocketHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			break
 		}
-		if bytes.Compare(message, []byte("Ping")) == 0 {
+		if bytes.Equal(message, []byte("Ping")) {
 			err = conn.WriteMessage(messageType, []byte("Pong"))
 			if err != nil {
 				break
@@ -47,7 +47,7 @@ func (s Server) SocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s Server) StartServer(ctx context.Context, cfg config.Server) error {
+func (s *Server) StartServer(ctx context.Context, cfg config.Server) error {
 	http.HandleFunc("/ws", s.SocketHandler)
 
 	srvErrCh := make(chan error, 1)

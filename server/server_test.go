@@ -38,7 +38,7 @@ func TestServerSuite(t *testing.T) {
 	suite.Run(t, new(ServerTestSuite))
 }
 
-func (sts ServerTestSuite) pongHandler(connection *websocket.Conn, done chan interface{}) {
+func (sts *ServerTestSuite) pongHandler(connection *websocket.Conn, done chan interface{}) {
 	defer close(done)
 	for {
 		_, msg, err := connection.ReadMessage()
@@ -48,7 +48,7 @@ func (sts ServerTestSuite) pongHandler(connection *websocket.Conn, done chan int
 	}
 }
 
-func (sts ServerTestSuite) TestPing() {
+func (sts *ServerTestSuite) TestPing() {
 	socketUrl := "ws://" + socketEndpoint + "/ws"
 	conn, _, err := websocket.DefaultDialer.Dial(socketUrl, nil)
 	sts.Require().NoError(err)
