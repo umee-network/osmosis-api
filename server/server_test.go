@@ -16,8 +16,6 @@ const socketEndpoint = "localhost:8080"
 
 type ServerTestSuite struct {
 	suite.Suite
-
-	server Server
 }
 
 func (sts *ServerTestSuite) SetupSuite() {
@@ -31,7 +29,16 @@ func (sts *ServerTestSuite) SetupSuite() {
 
 	ctx := context.Background()
 
-	go server.StartServer(ctx, config)
+	srvErrCh := make(chan error, 1)
+	go func() {
+		srvErrCh <- server.StartServer(ctx, config)
+		for {
+			select {
+			case err := <-srvErrCh:
+				sts.Require().NoError(err)
+			}
+		}
+	}()
 }
 
 func TestServerSuite(t *testing.T) {
