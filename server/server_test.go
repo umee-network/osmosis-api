@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"testing"
-	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/rs/zerolog"
@@ -28,11 +27,11 @@ func (sts *ServerTestSuite) SetupSuite() {
 	sts.Require().NoError(err)
 
 	ctx := context.Background()
+	errCh := make(chan error, 1)
 
-	srvErrCh := make(chan error, 1)
 	go func() {
-		srvErrCh <- server.StartServer(ctx, config)
-		for err := range srvErrCh {
+		errCh <- server.StartServer(ctx, config)
+		for err := range errCh {
 			sts.Require().NoError(err)
 		}
 	}()
@@ -47,7 +46,7 @@ func (sts *ServerTestSuite) pongHandler(connection *websocket.Conn, done chan in
 	for {
 		_, msg, err := connection.ReadMessage()
 		sts.Require().NoError(err)
-		sts.Require().Equal(bytes.Compare(msg, []byte("Pong")), 0)
+		sts.Require().True(bytes.Equal(msg, []byte("Pong")))
 		return
 	}
 }
@@ -61,15 +60,12 @@ func (sts *ServerTestSuite) TestPing() {
 	done := make(chan interface{})
 	go sts.pongHandler(conn, done)
 
-	for {
-		select {
-		case <-done:
-			err := conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-			sts.Require().NoError(err)
-			return
-		case <-time.After(time.Duration(1) * time.Millisecond * 1000):
-			err := conn.WriteMessage(websocket.TextMessage, []byte("Ping"))
-			sts.Require().NoError(err)
-		}
+	err = conn.WriteMessage(websocket.TextMessage, []byte("Ping"))
+	sts.Require().NoError(err)
+
+	for range done {
+		err := conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+		sts.Require().NoError(err)
+		return
 	}
 }

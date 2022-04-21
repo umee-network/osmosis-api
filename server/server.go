@@ -20,6 +20,8 @@ type Server struct {
 	cfg      config.Server
 }
 
+// SocketHandler upgrades our server to use websockets, and registers any msg
+// handlers. Currently only supports "Ping" requests.
 func (s *Server) SocketHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := s.upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -33,6 +35,7 @@ func (s *Server) SocketHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			break
 		}
+
 		if bytes.Equal(message, []byte("Ping")) {
 			err = conn.WriteMessage(messageType, []byte("Pong"))
 			if err != nil {
@@ -47,11 +50,11 @@ func (s *Server) SocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// StartServer sets up our websocket server, given a ctx and config.
 func (s *Server) StartServer(ctx context.Context, cfg config.Server) error {
 	http.HandleFunc("/ws", s.SocketHandler)
 
 	srvErrCh := make(chan error, 1)
-
 	go func() {
 		srvErrCh <- s.http.ListenAndServe()
 	}()
@@ -75,6 +78,7 @@ func (s *Server) StartServer(ctx context.Context, cfg config.Server) error {
 	}
 }
 
+// New creates a new instance of the Server struct and returns any errors.
 func New(logger zerolog.Logger, cfg config.Server) (Server, error) {
 	writeTimeout, err := time.ParseDuration(cfg.WriteTimeout)
 	if err != nil {
