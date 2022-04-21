@@ -32,11 +32,8 @@ func (sts *ServerTestSuite) SetupSuite() {
 	srvErrCh := make(chan error, 1)
 	go func() {
 		srvErrCh <- server.StartServer(ctx, config)
-		for {
-			select {
-			case err := <-srvErrCh:
-				sts.Require().NoError(err)
-			}
+		for err := range srvErrCh {
+			sts.Require().NoError(err)
 		}
 	}()
 }
