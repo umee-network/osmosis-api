@@ -41,11 +41,12 @@ func (s *Server) SocketHandler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				break
 			}
-		} else {
-			err = conn.WriteMessage(messageType, []byte("Invalid Request"))
-			if err != nil {
-				break
-			}
+			continue
+		}
+
+		err = conn.WriteMessage(messageType, []byte("Invalid Request"))
+		if err != nil {
+			break
 		}
 	}
 }
