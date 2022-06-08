@@ -8,7 +8,7 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/golangci/golangci-lint v1.46.2
 	github.com/gorilla/websocket v1.5.0
-	github.com/rs/zerolog v1.26.1
+	github.com/rs/zerolog v1.27.0
 	github.com/sirkon/goproxy v1.4.8
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.7.2
