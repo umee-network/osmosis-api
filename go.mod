@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/BurntSushi/toml v1.1.0
+	github.com/cosmos/cosmos-sdk/api v0.1.0
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/golangci/golangci-lint v1.46.2
 	github.com/gorilla/websocket v1.5.0
@@ -49,6 +50,7 @@ require (
 	github.com/chavacava/garif v0.0.0-20220316182200-5cad0b5181d4 // indirect
 	github.com/confio/ics23/go v0.6.6 // indirect
 	github.com/cosmos/btcutil v1.0.4 // indirect
+	github.com/cosmos/cosmos-proto v1.0.0-alpha7 // indirect
 	github.com/cosmos/cosmos-sdk v0.45.3 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/iavl v0.17.3 // indirect
