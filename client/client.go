@@ -83,7 +83,9 @@ func (c *Client) connectGRPC() error {
 }
 
 // GetSpotPrice returns the spot price of an asset in a given pool.
-func (c *Client) GetSpotPrice(ctx context.Context, req types.QuerySpotPriceRequest) (*types.QuerySpotPriceResponse, error) {
+func (c *Client) GetSpotPrice(ctx context.Context,
+	req types.QuerySpotPriceRequest,
+) (*types.QuerySpotPriceResponse, error) {
 	ctx, cancel := context.WithTimeout(ctx, c.grpcTimeout)
 	ctx = metadata.AppendToOutgoingContext(ctx, c.headers...)
 	defer cancel()
