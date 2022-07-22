@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	tx "github.com/cosmos/cosmos-sdk/api/cosmos/tx/v1beta1"
+	"github.com/osmosis-labs/osmosis/x/gamm/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
@@ -82,21 +82,18 @@ func (c *Client) connectGRPC() error {
 	return nil
 }
 
-// GetTxs returns the transactions which match the events queried,
-// e.g. req.events=["message.action='/cosmos.bank.v1beta1.Msg/Send'"]
-func (c *Client) GetTxs(req *tx.GetTxsEventRequest) ([]*tx.Tx, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), c.grpcTimeout)
+// GetSpotPrice returns the spot price of an asset in a given pool.
+func (c *Client) GetSpotPrice(ctx context.Context, req types.QuerySpotPriceRequest) (*types.QuerySpotPriceResponse, error) {
+	ctx, cancel := context.WithTimeout(ctx, c.grpcTimeout)
 	ctx = metadata.AppendToOutgoingContext(ctx, c.headers...)
 	defer cancel()
 
-	queryClient := tx.NewServiceClient(c.grpcConnection)
+	queryClient := types.NewQueryClient(c.grpcConnection)
 
-	queryResponse, err := queryClient.GetTxsEvent(
-		ctx, req,
-	)
+	res, err := queryClient.SpotPrice(ctx, &req)
 	if err != nil {
-		return []*tx.Tx{}, fmt.Errorf("failed to make grpc query: %w", err)
+		return nil, err
 	}
 
-	return queryResponse.Txs, nil
+	return res, nil
 }
